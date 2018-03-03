@@ -1,5 +1,8 @@
 package chapter1
 
+
+object Example4 extends App {
+
 final case class Cat(
                     name: String,
                     age: Int,
@@ -7,37 +10,35 @@ final case class Cat(
                     )
 
 // The Type Class
-trait Printablee[A] {
+trait Printable[A] {
   def format(value: A): String
 }
 
 // The Type Instances
-object PrintableeInstances {
-  implicit val stringInstance = new Printablee[String] {
+object PrintableInstances {
+  implicit val stringInstance = new Printable[String] {
     override def format(value: String): String = value
   }
 
-  implicit val intInstance = new Printablee[Int] {
+  implicit val intInstance = new Printable[Int] {
     override def format(value: Int): String = value.toString
   }
 
-  implicit val catInstance = new Printablee[Cat] {
+  implicit val catInstance = new Printable[Cat] {
     override def format(value: Cat): String =
       s"${value.name} is a ${value.age} yeat-old ${value.color} cat."
   }
 }
 
-object PrintableeSyntax {
+object PrintableSyntax {
   implicit class PrintOps[A](value: A) {
-    def format(implicit p: Printablee[A]): String = p.format(value)
-    def print(implicit p: Printablee[A]): Unit = println(format)
+    def format(implicit p: Printable[A]): String = p.format(value)
+    def print(implicit p: Printable[A]): Unit = println(format)
   }
 }
 
-object Example4 extends App {
-
-  import PrintableeInstances._
-  import PrintableeSyntax._
+  import PrintableInstances._
+  import PrintableSyntax._
 
   Cat("Garfield", 8, "Orange").print
 }

@@ -2,33 +2,32 @@ package chapter2.usecases
 
 object Example2Semigroup extends App with Data {
 
-  //add money function
-  def addM(money1: Money, money2: Money): Money = {
-    Money(money1.euro + money2.euro + ((money1.cents + money2.cents) / 100),
-      (money1.cents + money2.cents) % 100)
+  def addM(m1: Money, m2: Money): Money = {
+    Money((m1.dollars + m2.dollars) + (m1.cents + m2.cents) / 100,
+      (m1.cents + m2.cents) % 100)
   }
 
   trait Addable[T] {
     def add(a: T, b: T): T
   }
 
-  def add[X, Y](balances: Map[X, Y], addMap: Map[X, Y])
-               (implicit addable: Addable[Y]): Map[X, Y] = {
-    balances.foldLeft(addMap) {
+  def add[X, Y](balances: Map[X, Y], map: Map[X, Y])(implicit A: Addable[Y]): Map[X, Y] = {
+    balances.foldLeft(map) {
       case (acc, (x, y)) =>
-        acc + (x -> acc.get(x).map(addable.add(_, y)).getOrElse(y))
+        acc + (x -> acc.get(x).fold(y)(A.add(_ , y)))
     }
   }
-
-  println(s"Salary credit in you account xxxxxxx ${addM(balance, salary)}")
 
   implicit val addMoney = new Addable[Money] {
     override def add(a: Money, b: Money): Money = addM(a, b)
   }
-  println(s"Salary transfer to all employees ${add(balances, salaries)}")
 
   implicit val addInt = new Addable[Int] {
     override def add(a: Int, b: Int): Int = a + b
   }
-  println(s"Your game marbles balance is: ${add(marbles, won)}")
+
+  println(s" Salary transfer to all employees ${add(balances, salaries)}")
+  println(s" Your marble balance is ${add(marbles, won)}")
 }
+
+

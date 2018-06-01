@@ -5,7 +5,7 @@ import cats.instances.int._
 import cats.instances.option._
 import cats.syntax.semigroup._
 
-object Example3 extends App {
+object  Example3 extends App {
 
   // without monoids
   def addWithoutMonoid(items: List[Option[Int]]): Option[Int] = {

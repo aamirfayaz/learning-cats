@@ -1,6 +1,6 @@
 package chapter2.usecases
 
-case class Money(euro: Int, cents: Int)
+case class Money(dollars: Int, cents: Int)
 
 trait Data {
   val balance = Money(102, 44)
